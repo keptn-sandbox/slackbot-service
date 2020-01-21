@@ -1,6 +1,6 @@
 FROM python:3
 
-# copy files to /pp directory
+# copy files to /app directory
 COPY . /app
 
 WORKDIR /app
