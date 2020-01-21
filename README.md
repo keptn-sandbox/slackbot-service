@@ -36,7 +36,7 @@ TODO
 Please always double check the version of Keptn you are using compared to the version of this service, and follow the compatibility matrix below.
 
 
-| Keptn Version    | [Notification Service Image](https://hub.docker.com/r/keptncontrib/notification-service/tags) |
+| Keptn Version    | [Slackbot Service Image](https://hub.docker.com/r/keptncontrib/slackbot-service/tags) |
 |:----------------:|:----------------------------------------:|
 |       0.6.x      | keptncontrib/slackbot-service:0.1.0  |
 
