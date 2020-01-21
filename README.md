@@ -19,11 +19,11 @@ Provide instructions how to setup Slack and how to get the token that is needed
 **Keptn**
 
 Get the Keptn endpoint by executing the following command in your terminal:
-```console
+```sh
 echo https://api.keptn.$(kubectl get cm keptn-domain -n keptn -ojsonpath={.data.app_domain})
 ```
 Get the Keptn API token by executing the following command in your terminal:
-```console
+```sh
 echo $(kubectl get secret keptn-api-token -n keptn -ojsonpath={.data.keptn-api-token} | base64 --decode)
 ```
 
