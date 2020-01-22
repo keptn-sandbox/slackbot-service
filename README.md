@@ -55,11 +55,16 @@ docker run -d -e slackbot_token=<api token> DOCKERUSER/slackbot-service:TAG
 ```
 
 Create .env file on the root of this project and set below values
+```
 slackbot_token='<slack bot token>'
 keptn_host='<keptn host>'
 keptn_api_token='<keptn token>'
+ ```
+
 
 TODO Example:
-slackbot_token=
-keptn_host=
-keptn_api_token=
+```
+slackbot_token=''
+keptn_host='https://api.keptn.123.45.67.890.xip.io'
+keptn_api_token='xcfaaefoobar'
+```
