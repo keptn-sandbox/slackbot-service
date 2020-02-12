@@ -69,7 +69,7 @@ Please always double check the version of Keptn you are using compared to the ve
     pip install -r requirements.txt
     ```
 
-1. Make sure you have the credentials defined in a `.env` file:
+1. Make sure you have the credentials defined in a `.env` file in the project directory:
 
     ```
     slackbot_token='xxx'
