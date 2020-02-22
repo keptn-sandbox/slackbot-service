@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from slackbot.bot import respond_to
 import re
 import json
@@ -11,6 +13,10 @@ import slackbot_settings
 keptn_host = os.getenv('keptn_host')
 keptn_token = os.getenv('keptn_api_token')
 headers = {'x-token': keptn_token, 'Content-Type': 'application/json'}
+
+def helper_datetime(mins):
+	past = datetime.datetime.now() - datetime.timedelta(minutes=int(mins))
+	return past.isoformat()
 
 def send_event(start, end, project, service, stage):
 	
@@ -47,8 +53,8 @@ def get_evaluation(keptn_context, message):
 		time.sleep(1)
 	
 	# indicator results
-	indicators = res_json['data']['evaluationdetails']['indicatorResults']
-
+	indicators = json.dumps(res_json['data']['evaluationdetails'])
+	
 	message.send_webapi("Evaluation-Done", attachments = [
         {
 	    "blocks": [
@@ -94,34 +100,43 @@ def get_evaluation(keptn_context, message):
 	            ]
         }
     ])
-	message.reply(str(indicators), in_thread=True)
+	message.reply(indicators, in_thread=True)
 
 
 @respond_to(r'start-evaluation (.*)', re.IGNORECASE)
 def start_evaluation(message, args):
-	args_list = args.split(' ')
-	if(len(args_list) == 0 or len(args_list) < 5):
-		now = datetime.datetime.now().isoformat()
-		message.reply("`Message should be like: start-evaluation <project> <service> <stage> <start> <end> | start and end should be in iso format i.e {}`".format(now))
-		return
-		
-	project = args_list[0]
-	service = args_list[1]
-	stage = args_list[2]
-	strategy = 'manual' # args_list[3]
-	start_datetime = args_list[3]
-	end_datetime = args_list[4]
-
-    # call keptn API send event
-	logging.info("Project: " + project)
-	logging.info("Service: " + service)
-	logging.info("Stage: " + stage)
-	logging.info("Strategy: " + strategy)
-	logging.info("Start: " + start_datetime)
-	logging.info("End: " + end_datetime)
-	
-	#api
 	try:
+		args_list = args.split(' ')
+		project, service, stage, start_datetime, end_datetime = '','','','',''
+		print(args_list)
+		if(len(args_list) == 4):
+			project = args_list[0]
+			service = args_list[1]
+			stage = args_list[2]
+			end_datetime_dt = datetime.datetime.now()
+			end_datetime = end_datetime_dt.isoformat()
+			start_datetime = (end_datetime_dt - datetime.timedelta(minutes=int(args_list[3]))).isoformat()
+		elif(len(args_list) == 5):
+			project = args_list[0]
+			service = args_list[1]
+			stage = args_list[2]
+			start_datetime = args_list[3]
+			end_datetime = args_list[4]
+		elif(len(args_list) == 0 or len(args_list) < 5):
+			now = datetime.datetime.now().isoformat()
+			message.reply("`Message should be like: start-evaluation <project> <service> <stage> <start> <end> | start and end should be in iso format i.e {}`".format(now))
+			return
+		
+		strategy = 'manual' # args_list[3]
+
+    	# call keptn API send event
+		logging.info("Project: " + project)
+		logging.info("Service: " + service)
+		logging.info("Stage: " + stage)
+		logging.info("Strategy: " + strategy)
+		logging.info("Start: " + start_datetime)
+		logging.info("End: " + end_datetime)
+		
 		keptn_context = send_event(start_datetime, end_datetime, project, service, stage)
 
 		message.send_webapi("Start-Evaluation", attachments = [

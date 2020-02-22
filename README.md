@@ -68,3 +68,7 @@ slackbot_token=''
 keptn_host='https://api.keptn.123.45.67.890.xip.io'
 keptn_api_token='xcfaaefoobar'
 ```
+---
+
+__Thanks__ to James Tatum & lins05  for developing slackbot library [pypi-slackbot](https://pypi.org/project/slackbot/)
+
