@@ -122,7 +122,7 @@ def start_evaluation(message, args):
 			stage = args_list[2]
 			start_datetime = args_list[3]
 			end_datetime = args_list[4]
-		elif(len(args_list) == 0 or len(args_list) < 5):
+		else:
 			now = datetime.datetime.now().isoformat()
 			message.reply("`Message should be like: start-evaluation <project> <service> <stage> <start> <end> | start and end should be in iso format i.e {}`".format(now))
 			return
