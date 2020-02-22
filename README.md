@@ -43,6 +43,48 @@ Please always double check the version of Keptn you are using compared to the ve
 
 ## Local development
 
+### Python Virtual Environment
+
+1. If not installed yet install the `virtualenv` for your python installation with:
+
+    ```console
+    pip install virtualenv
+    ```
+
+1. Within your `slackbot-service` folder create the virtual environment with: 
+
+    ```console
+    virtualenv venv
+    ```
+
+1. Active the virtual environment: 
+
+    ```console
+    source venv/bin/active
+    ```
+
+1. Install the requirements into the virtual environment:
+
+    ```console
+    pip install -r requirements.txt
+    ```
+
+1. Make sure you have the credentials defined in a `.env` file in the project directory:
+
+    ```
+    slackbot_token='xxx'
+    keptn_host='https://api.keptn.YOURIP.com'
+    keptn_api_token='xxx'
+    ```
+
+1. Run the Slackbot:
+
+    ```console
+    python run.py
+    ```
+
+### Docker Build
+
 Buid and run the Docker container locally.
 
 ```sh
