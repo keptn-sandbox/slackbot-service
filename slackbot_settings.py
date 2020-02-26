@@ -8,7 +8,7 @@ DEBUG = False
 
 API_TOKEN = os.getenv('slackbot_token')
 
-DEFAULT_REPLY = "Sorry but I didn't understand you"
+DEFAULT_REPLY = "Sorry, but I didn't understand you"
 
 PLUGINS = [
     'keptnbot.plugins'
