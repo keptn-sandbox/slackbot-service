@@ -2,19 +2,44 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/keptn-contrib/slackbot-service?include_prereleases)
 
-The *slackbot-service* is a [Keptn](https://keptn.sh) service that is responsible for interacting with Keptn via a Slack bot.
+The *slackbot-service* is a [Keptn](https://keptn.sh) service that is responsible for interacting with Keptn via a Slack bot. You can interact with the bot by e.g., asking for a deployment evaluation.
 
 The service itself doesn't have to run in the Keptn cluster, however, it is for sure possible. 
 
 
 ## Installation
 
-### Provide credentials
+### Create bot user in Slack and receive bot token
+
+
+1. Go to https://<tenant>.slack.com/apps/manage/custom-integrations and click on Bots to add a bot user.
+    ![botuser](./images/bot-user.png)
+
+1. Click on **Add to Slack** and give your bot a username. This will be the name you will interact with the bot. A good name would be, e.g., **keptn**
+
+1. Click on **Add bot integration**
+
+1. In the next screen you will see the API Token for your Bot user. You will need this token to connect your Slackbot-Service with the just created bot.
+    You can also change the name here, or customize the bot by changing the icon.
+    ![bot-token](./images/bot-token.png)
+
+<!--
+alternative way
+
+1. Create Slack app
+
+    https://api.slack.com/apps?new_app=1
+
+1.
+-->
+
+
+### Get credentials
 
 **Slack**
 
-TODO: 
-Provide instructions how to setup Slack and how to get the token that is needed
+You will need the Slack Bot token you received during the setup of the Bot user.
+
 
 **Keptn**
 
@@ -27,9 +52,21 @@ Get the Keptn API token by executing the following command in your terminal:
 echo $(kubectl get secret keptn-api-token -n keptn -ojsonpath={.data.keptn-api-token} | base64 --decode)
 ```
 
-### Enter crededentials
+### Set environment variables
 
-TODO
+Clone the repo or download just the `deploy/slackbot-service.yaml` file.
+Edit the `env` section of the file to have the environment variables match your Keptn API token and Slackbot Token.
+If you are going to deploy the Slackbot service into the Keptn cluster, you can keep the default for the variable `KEPTN_HOST`. If you are going to deploy it on a different cluster, please update the KEPTN_HOST to point to your cluster.
+```yaml
+env:
+- name: KEPTN_HOST
+  value: "https://api.keptn/"
+- name: KEPTN_API_TOKEN
+  value: ""
+- name: SLACKBOT_TOKEN
+  value: ""
+```
+
 
 ### Compatibility Matrix
 
@@ -73,7 +110,7 @@ Please always double check the version of Keptn you are using compared to the ve
 
     ```
     slackbot_token='xxx'
-    keptn_host='https://api.keptn.YOURIP.com'
+    keptn_host='https://api.keptn.YOUR-IP.com'
     keptn_api_token='xxx'
     ```
 
@@ -112,5 +149,6 @@ keptn_api_token='xcfaaefoobar'
 ```
 ---
 
-__Thanks__ to James Tatum & lins05  for developing slackbot library [pypi-slackbot](https://pypi.org/project/slackbot/)
+
+**Thanks** to James Tatum & lins05  for developing slackbot library [pypi-slackbot](https://pypi.org/project/slackbot/)
 
