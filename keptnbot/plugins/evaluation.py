@@ -116,6 +116,8 @@ def start_evaluation(message, args):
 			end_datetime_dt = datetime.datetime.now()
 			end_datetime = end_datetime_dt.isoformat()
 			start_datetime = (end_datetime_dt - datetime.timedelta(minutes=int(args_list[3]))).isoformat()
+			end_datetime = end_datetime+"+00:00"
+			start_datetime = start_datetime+"+00:00"
 		elif(len(args_list) == 5):
 			project = args_list[0]
 			service = args_list[1]
