@@ -15,14 +15,14 @@ spec:
     spec:
       containers:
       - name: slackbot-service
-        image: keptncontrib/slackbot-service:latest
+        image: jetzlstorfer/slackbot-service:0.1
         imagePullPolicy: Always
         env:
-        - name: KEPTN_HOST
-          value: "https://api.keptn/"
-        - name: KEPTN_API_TOKEN
+        - name: keptn_host
+          value: "http://api.keptn.svc.cluster.local"
+        - name: keptn_api_token
           value: ""
-        - name: SLACKBOT_TOKEN
+        - name: slackbot_token
           value: ""
         ports:
         - containerPort: 8080
