@@ -40,7 +40,6 @@ alternative way
 
 You will need the Slack Bot token you received during the setup of the Bot user.
 
-
 **Keptn**
 
 Get the Keptn endpoint by executing the following command in your terminal:
@@ -59,11 +58,11 @@ Edit the `env` section of the file to have the environment variables match your 
 If you are going to deploy the Slackbot service into the Keptn cluster, you can keep the default for the variable `KEPTN_HOST`. If you are going to deploy it on a different cluster, please update the KEPTN_HOST to point to your cluster.
 ```yaml
 env:
-- name: KEPTN_HOST
-  value: "https://api.keptn/"
-- name: KEPTN_API_TOKEN
+- name: keptn_host
+  value: "http://api.keptn.svc.cluster.local"
+- name: keptn_api_token
   value: ""
-- name: SLACKBOT_TOKEN
+- name: slackbot_token
   value: ""
 ```
 
