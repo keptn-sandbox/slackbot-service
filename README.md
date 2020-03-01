@@ -12,7 +12,7 @@ The service itself doesn't have to run in the Keptn cluster, however, it is for 
 ### Create bot user in Slack and receive bot token
 
 
-1. Go to https://<tenant>.slack.com/apps/manage/custom-integrations and click on Bots to add a bot user.
+1. Go to https://YOUR-SLACK-TENANT.slack.com/apps/manage/custom-integrations and click on Bots to add a bot user.
     ![botuser](./images/bot-user.png)
 
 1. Click on **Add to Slack** and give your bot a username. This will be the name you will interact with the bot. A good name would be, e.g., **keptn**
