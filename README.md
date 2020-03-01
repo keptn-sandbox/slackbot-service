@@ -142,7 +142,7 @@ keptn_api_token='<keptn token>'
 
 TODO Example:
 ```
-slackbot_token=''
+slackbot_token='xoxb-abcdef-abcdef'
 keptn_host='https://api.keptn.123.45.67.890.xip.io'
 keptn_api_token='xcfaaefoobar'
 ```
