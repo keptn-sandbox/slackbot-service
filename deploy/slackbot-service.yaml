@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: slackbot-service
-        image: jetzlstorfer/slackbot-service:0.1
+        image: keptncontrib/slackbot-service:latest
         imagePullPolicy: Always
         env:
         - name: keptn_host
