@@ -128,7 +128,7 @@ def start_evaluation(message, args):
 			end_datetime = datetime.datetime.now().isoformat().split('T')[0]+'T'+args_list[4]+":00.000+00:00"
 		else:
 			now = datetime.datetime.now().isoformat()
-			message.reply("`Message should be like: start-evaluation <project> <service> <stage> <start> <end> | start and end should be in iso format i.e {}`".format(now))
+			message.reply("`Type in @<myname> help to see what I can do!`")
 			return
 		
 		strategy = 'manual' # args_list[3]
