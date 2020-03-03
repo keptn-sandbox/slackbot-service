@@ -107,6 +107,8 @@ def get_evaluation(keptn_context, message):
 def start_evaluation(message, args):
 	try:
 		args_list = args.split(' ')
+		# removing empty strings from args list
+		args_list = list(filter(None, args_list))
 		project, service, stage, start_datetime, end_datetime = '','','','',''
 		print(args_list)
 		if(len(args_list) == 4):
@@ -122,8 +124,8 @@ def start_evaluation(message, args):
 			project = args_list[0]
 			service = args_list[1]
 			stage = args_list[2]
-			start_datetime = args_list[3]
-			end_datetime = args_list[4]
+			start_datetime = datetime.datetime.now().isoformat().split('T')[0]+'T'+args_list[3]+":00.000+00:00"
+			end_datetime = datetime.datetime.now().isoformat().split('T')[0]+'T'+args_list[4]+":00.000+00:00"
 		else:
 			now = datetime.datetime.now().isoformat()
 			message.reply("`Message should be like: start-evaluation <project> <service> <stage> <start> <end> | start and end should be in iso format i.e {}`".format(now))
