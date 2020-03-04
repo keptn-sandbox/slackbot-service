@@ -46,6 +46,12 @@ Get the Keptn endpoint by executing the following command in your terminal:
 ```sh
 echo https://api.keptn.$(kubectl get cm keptn-domain -n keptn -ojsonpath={.data.app_domain})
 ```
+
+Get the Keptn Bridge endpoint by executing the following command in your terminal:
+```sh
+echo https://bridge.keptn.$(kubectl get cm keptn-domain -n keptn -ojsonpath={.data.app_domain})
+```
+
 Get the Keptn API token by executing the following command in your terminal:
 ```sh
 echo $(kubectl get secret keptn-api-token -n keptn -ojsonpath={.data.keptn-api-token} | base64 --decode)
@@ -60,6 +66,8 @@ If you are going to deploy the Slackbot service into the Keptn cluster, you can 
 env:
 - name: keptn_host
   value: "http://api.keptn.svc.cluster.local"
+- name: bridge_url
+  value: ""
 - name: keptn_api_token
   value: ""
 - name: slackbot_token
