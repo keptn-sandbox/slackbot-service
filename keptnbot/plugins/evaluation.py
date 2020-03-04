@@ -54,7 +54,9 @@ def get_evaluation(keptn_context, message):
 	
 	# indicator results
 	indicators = json.dumps(res_json['data']['evaluationdetails'])
-	
+	bridge_url = 'Bridge URL not available'
+	if(os.getenv('bridge_url')):
+		bridge_url = keptn_host+'/project/'+res_json['data']['project']
 	message.send_webapi("Evaluation-Done", attachments = [
         {
 	    "blocks": [
@@ -87,6 +89,10 @@ def get_evaluation(keptn_context, message):
 	    			{
 	    				"type": "mrkdwn",
 	    				"text": "*Result:*\n " + res_json['data']['result']
+	    			},
+					{
+	    				"type": "mrkdwn",
+	    				"text": "*BridgeURL:*\n " + bridge_url
 	    			},
 	    			{
 	    				"type": "mrkdwn",
