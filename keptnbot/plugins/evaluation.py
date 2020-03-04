@@ -110,7 +110,8 @@ def start_evaluation(message, args):
 		# removing empty strings from args list
 		args_list = list(filter(None, args_list))
 		project, service, stage, start_datetime, end_datetime = '','','','',''
-		print(args_list)
+		# print(args_list)
+
 		if(len(args_list) == 4):
 			project = args_list[0]
 			service = args_list[1]
@@ -120,12 +121,26 @@ def start_evaluation(message, args):
 			start_datetime = (end_datetime_dt - datetime.timedelta(minutes=int(args_list[3]))).isoformat()
 			end_datetime = end_datetime+"+00:00"
 			start_datetime = start_datetime+"+00:00"
+		
+		# start-evaluation sockshop carts preprod 08:00 08:15
 		elif(len(args_list) == 5):
 			project = args_list[0]
 			service = args_list[1]
 			stage = args_list[2]
 			start_datetime = datetime.datetime.now().isoformat().split('T')[0]+'T'+args_list[3]+":00.000+00:00"
 			end_datetime = datetime.datetime.now().isoformat().split('T')[0]+'T'+args_list[4]+":00.000+00:00"
+		
+		# start-evaluation sockshop carts preprod 01/01/2020 08:00 08:15
+		elif(len(args_list) == 6):
+			project = args_list[0]
+			service = args_list[1]
+			stage = args_list[2]
+			date = args_list[3] # date in format d/m/y
+			date_datetime = datetime.datetime.strptime(date, "%d/%m/%Y")
+			start_datetime = date_datetime.isoformat().split('T')[0]+'T'+args_list[4]+":00.000+00:00"
+			end_datetime = date_datetime.isoformat().split('T')[0]+'T'+args_list[5]+":00.000+00:00"
+			print("start :" + start_datetime)
+			print("end :" + end_datetime)
 		else:
 			now = datetime.datetime.now().isoformat()
 			message.reply("`Type in @<myname> help to see what I can do!`")
