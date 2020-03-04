@@ -21,7 +21,7 @@ spec:
         - name: keptn_host
           value: "http://api.keptn.svc.cluster.local"
         - name: bridge_url
-          value: "https://bridge.keptn.13.86.192.249.xip.io"
+          value: "https://bridge.keptn.YOUR-IP.xip.io"
         - name: keptn_api_token
           value: ""
         - name: slackbot_token
