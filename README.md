@@ -74,6 +74,13 @@ env:
   value: ""
 ```
 
+### Install it in your cluster
+
+Install the Slackbot service in your cluster by applying the manifest.
+
+```console
+kubectl apply -f slackbot-service.yaml
+```
 
 ### Compatibility Matrix
 
