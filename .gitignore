@@ -1,0 +1,6 @@
+env
+venv
+.env
+__paycache__
+*.pyc
+.vscode
