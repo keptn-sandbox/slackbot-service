@@ -4,6 +4,8 @@
 
 The *slackbot-service* is a [Keptn](https://keptn.sh) service that is responsible for interacting with Keptn via a Slack bot. You can interact with the bot by e.g., asking for a deployment evaluation.
 
+**Please note:** If you are looking for the Slack integration that **sends** events from Keptn into a Slack channel, please refer to the [notification-service](https://github.com/keptn-contrib/notification-service). The slackbot-service is for triggering actions via the Slackbot and is not listening for events from Keptn.
+
 The service itself doesn't have to run in the Keptn cluster, however, it is for sure possible. 
 
 
@@ -12,7 +14,7 @@ The service itself doesn't have to run in the Keptn cluster, however, it is for 
 ### Create bot user in Slack and receive bot token
 
 
-1. Go to https://YOUR-SLACK-TENANT.slack.com/apps/manage/custom-integrations and click on Bots to add a bot user.
+1. Go to https://YOUR-SLACK-TENANT.slack.com/apps/manage/custom-integrations and search for **Bots** to add a bot user.
     ![botuser](./images/bot-user.png)
 
 1. Click on **Add to Slack** and give your bot a username. This will be the name you will interact with the bot. A good name would be, e.g., **keptn**
