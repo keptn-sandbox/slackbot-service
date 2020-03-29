@@ -11,3 +11,5 @@ def hello_reply(message):
     reply.append(u'•`{0}`'.format('@<Botname> start-evaluation <project> <service> <stage> <start-time> <end-time> | example: @Botname start-evaluation <project> <service> <stage> 12:00 12:15'))
     reply.append(u'•`{0}`'.format('@<Botname> start-evaluation <project> <service> <stage> <date> <start-time> <end-time> | example: @Botname start-evaluation <project> <service> <stage> 30/01/2020 12:00 12:15'))
     message.send(u'\n'.join(reply))
+
+    

@@ -9,6 +9,7 @@ import os
 import time
 import logging
 import slackbot_settings
+import dateutil.parser
 
 keptn_host = os.getenv('keptn_host')
 keptn_token = os.getenv('keptn_api_token')
@@ -17,6 +18,10 @@ headers = {'x-token': keptn_token, 'Content-Type': 'application/json'}
 def helper_datetime(mins):
 	past = datetime.datetime.now() - datetime.timedelta(minutes=int(mins))
 	return past.isoformat()
+
+def convert_iso_to_datetime(s):
+	d = dateutil.parser.parse(s)
+	return d
 
 def send_event(start, end, project, service, stage):
 	
@@ -108,9 +113,9 @@ def get_evaluation(keptn_context, message):
     ])
 	message.reply(indicators, in_thread=True)
 
-
 @respond_to(r'start-evaluation (.*)', re.IGNORECASE)
 def start_evaluation(message, args):
+	tz_offset = (message.user['tz_offset'])
 	try:
 		args_list = args.split(' ')
 		# removing empty strings from args list
@@ -135,7 +140,19 @@ def start_evaluation(message, args):
 			stage = args_list[2]
 			start_datetime = datetime.datetime.now().isoformat().split('T')[0]+'T'+args_list[3]+":00.000+00:00"
 			end_datetime = datetime.datetime.now().isoformat().split('T')[0]+'T'+args_list[4]+":00.000+00:00"
-		
+			
+			# convert isoformat back to datetime object 
+			start_datetime = convert_iso_to_datetime(start_datetime)
+			end_datetime = convert_iso_to_datetime(end_datetime)
+
+			# convert datetime object to unix utc timestamp
+			ts_start_datetime = datetime.datetime.utcfromtimestamp(start_datetime.timestamp() - int(tz_offset))
+			ts_end_datetime = datetime.datetime.utcfromtimestamp(end_datetime.timestamp() - int(tz_offset))
+
+			# convert utc timestamp to isoformat
+			start_datetime = datetime.datetime.isoformat(ts_start_datetime)
+			end_datetime = datetime.datetime.isoformat(ts_end_datetime)
+
 		# start-evaluation sockshop carts preprod 01/01/2020 08:00 08:15
 		elif(len(args_list) == 6):
 			project = args_list[0]
@@ -145,8 +162,19 @@ def start_evaluation(message, args):
 			date_datetime = datetime.datetime.strptime(date, "%d/%m/%Y")
 			start_datetime = date_datetime.isoformat().split('T')[0]+'T'+args_list[4]+":00.000+00:00"
 			end_datetime = date_datetime.isoformat().split('T')[0]+'T'+args_list[5]+":00.000+00:00"
-			print("start :" + start_datetime)
-			print("end :" + end_datetime)
+
+			# convert isoformat back to datetime object 
+			start_datetime = convert_iso_to_datetime(start_datetime)
+			end_datetime = convert_iso_to_datetime(end_datetime)
+
+			# convert datetime object to unix utc timestamp
+			ts_start_datetime = datetime.datetime.utcfromtimestamp(start_datetime.timestamp() - int(tz_offset))
+			ts_end_datetime = datetime.datetime.utcfromtimestamp(end_datetime.timestamp() - int(tz_offset))
+
+			# convert utc timestamp to isoformat
+			start_datetime = datetime.datetime.isoformat(ts_start_datetime)
+			end_datetime = datetime.datetime.isoformat(ts_end_datetime)
+
 		else:
 			now = datetime.datetime.now().isoformat()
 			message.reply("`Type in @<myname> help to see what I can do!`")
