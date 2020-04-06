@@ -5,11 +5,12 @@ import re
 import json
 import requests
 import datetime
-import os
+import os, sys
 import time
 import logging
 import slackbot_settings
 import dateutil.parser
+import pytz
 
 keptn_host = os.getenv('keptn_host')
 keptn_token = os.getenv('keptn_api_token')
@@ -115,8 +116,15 @@ def get_evaluation(keptn_context, message):
 
 @respond_to(r'start-evaluation (.*)', re.IGNORECASE)
 def start_evaluation(message, args):
-	tz_offset = (message.user['tz_offset'])
 	try:
+		tz_offset = (message.user['tz_offset'])
+		user_tz_name = message.user['tz']
+		user_tz = pytz.timezone(user_tz_name)
+		user_ts = message.body['ts']
+
+		# convert timestamp to datetime
+		user_dt = datetime.datetime.fromtimestamp(float(user_ts))
+
 		args_list = args.split(' ')
 		# removing empty strings from args list
 		args_list = list(filter(None, args_list))
@@ -127,7 +135,7 @@ def start_evaluation(message, args):
 			project = args_list[0]
 			service = args_list[1]
 			stage = args_list[2]
-			end_datetime_dt = datetime.datetime.now()
+			end_datetime_dt = datetime.datetime.fromtimestamp(utc_ts)
 			end_datetime = end_datetime_dt.isoformat()
 			start_datetime = (end_datetime_dt - datetime.timedelta(minutes=int(args_list[3]))).isoformat()
 			end_datetime = end_datetime+"+00:00"
@@ -135,46 +143,40 @@ def start_evaluation(message, args):
 		
 		# start-evaluation sockshop carts preprod 08:00 08:15
 		elif(len(args_list) == 5):
+			logging.info('evaluation for hours and minutes')
 			project = args_list[0]
 			service = args_list[1]
 			stage = args_list[2]
-			start_datetime = datetime.datetime.now().isoformat().split('T')[0]+'T'+args_list[3]+":00.000+00:00"
-			end_datetime = datetime.datetime.now().isoformat().split('T')[0]+'T'+args_list[4]+":00.000+00:00"
 			
-			# convert isoformat back to datetime object 
-			start_datetime = convert_iso_to_datetime(start_datetime)
-			end_datetime = convert_iso_to_datetime(end_datetime)
+			start_datetime_user = user_dt.isoformat().split('T')[0]+'T'+args_list[3]
+			end_datetime_user = user_dt.isoformat().split('T')[0]+'T'+args_list[4]
 
-			# convert datetime object to unix utc timestamp
-			ts_start_datetime = datetime.datetime.utcfromtimestamp(start_datetime.timestamp() - int(tz_offset))
-			ts_end_datetime = datetime.datetime.utcfromtimestamp(end_datetime.timestamp() - int(tz_offset))
+			unaware_tz_start_dt = convert_iso_to_datetime(start_datetime_user)
+			unaware_tz_end_dt = convert_iso_to_datetime(end_datetime_user)
 
-			# convert utc timestamp to isoformat
-			start_datetime = datetime.datetime.isoformat(ts_start_datetime)
-			end_datetime = datetime.datetime.isoformat(ts_end_datetime)
-
+			# set user timezone, convert to UTC and to isoformat
+			start_datetime = user_tz.localize(unaware_tz_start_dt.replace(tzinfo=None)).astimezone(pytz.utc).isoformat()
+			end_datetime = user_tz.localize(unaware_tz_end_dt.replace(tzinfo=None)).astimezone(pytz.utc).isoformat()
+			
 		# start-evaluation sockshop carts preprod 01/01/2020 08:00 08:15
 		elif(len(args_list) == 6):
 			project = args_list[0]
 			service = args_list[1]
 			stage = args_list[2]
 			date = args_list[3] # date in format d/m/y
+			start_hour = args_list[4]
+			end_hour = args_list[5]
 			date_datetime = datetime.datetime.strptime(date, "%d/%m/%Y")
-			start_datetime = date_datetime.isoformat().split('T')[0]+'T'+args_list[4]+":00.000+00:00"
-			end_datetime = date_datetime.isoformat().split('T')[0]+'T'+args_list[5]+":00.000+00:00"
+			start_datetime_user = date_datetime.isoformat().split('T')[0]+'T'+args_list[4]+":00.000"
+			end_datetime_user = date_datetime.isoformat().split('T')[0]+'T'+args_list[5]+":00.000"
+			
+			unaware_tz_start_dt = convert_iso_to_datetime(start_datetime_user)
+			unaware_tz_end_dt = convert_iso_to_datetime(end_datetime_user)
 
-			# convert isoformat back to datetime object 
-			start_datetime = convert_iso_to_datetime(start_datetime)
-			end_datetime = convert_iso_to_datetime(end_datetime)
-
-			# convert datetime object to unix utc timestamp
-			ts_start_datetime = datetime.datetime.utcfromtimestamp(start_datetime.timestamp() - int(tz_offset))
-			ts_end_datetime = datetime.datetime.utcfromtimestamp(end_datetime.timestamp() - int(tz_offset))
-
-			# convert utc timestamp to isoformat
-			start_datetime = datetime.datetime.isoformat(ts_start_datetime)
-			end_datetime = datetime.datetime.isoformat(ts_end_datetime)
-
+			# set user timezone, convert to UTC and to isoformat
+			start_datetime = user_tz.localize(unaware_tz_start_dt.replace(tzinfo=None)).astimezone(pytz.utc).isoformat()
+			end_datetime = user_tz.localize(unaware_tz_end_dt.replace(tzinfo=None)).astimezone(pytz.utc).isoformat()
+			
 		else:
 			now = datetime.datetime.now().isoformat()
 			message.reply("`Type in @<myname> help to see what I can do!`")
@@ -239,6 +241,9 @@ def start_evaluation(message, args):
     	])
 		
 	except Exception as e:
+		exc_type, exc_obj, exc_tb = sys.exc_info()
+		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+		print(exc_type, fname, exc_tb.tb_lineno)
 		logging.error(e)
 
 
