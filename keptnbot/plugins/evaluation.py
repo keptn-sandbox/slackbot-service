@@ -26,6 +26,9 @@ def convert_iso_to_datetime(s):
 
 def send_event(start, end, project, service, stage):
 	
+	logging.info(keptn_host)
+	#logging.info(keptn_token)
+
 	body = {
   		"data": {
     	"start": start,
@@ -35,10 +38,12 @@ def send_event(start, end, project, service, stage):
     	"stage": stage,
     	"teststrategy": "manual"
   		},
-  		"type": "sh.keptn.event.start-evaluation"
+  		"type": "sh.keptn.event.start-evaluation",
+			"source": "https://github.com/keptn-sandbox/slackbot-service"
 	}
 	res = requests.post(url=keptn_host+"/v1/event", headers=headers, data=json.dumps(body), verify=slackbot_settings.TRUST_SELFSIGNED_SSL)
 	res_json = res.json()
+	logging.info(res_json)
 	keptn_context = res_json['keptnContext']
 	token = res_json['token']
 
