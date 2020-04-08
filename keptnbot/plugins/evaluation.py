@@ -127,6 +127,11 @@ def start_evaluation(message, args):
 		user_tz = pytz.timezone(user_tz_name)
 		user_ts = message.body['ts']
 
+		logging.info(user_ts)
+		logging.info(tz_offset)
+		logging.info(user_tz)
+		logging.info(user_tz_name)
+
 		# convert timestamp to datetime
 		user_dt = datetime.datetime.fromtimestamp(float(user_ts))
 
@@ -135,6 +140,8 @@ def start_evaluation(message, args):
 		args_list = list(filter(None, args_list))
 		project, service, stage, start_datetime, end_datetime = '','','','',''
 
+
+    # start-evaluation sockshop carts preprod 10
 		if(len(args_list) == 4):
 			project = args_list[0]
 			service = args_list[1]
@@ -142,16 +149,9 @@ def start_evaluation(message, args):
 			end_datetime_dt = datetime.datetime.fromtimestamp(float(user_ts))
 			end_datetime = end_datetime_dt.isoformat()
 			start_datetime = (end_datetime_dt - datetime.timedelta(minutes=int(args_list[3]))).isoformat()
-			end_datetime_user = end_datetime+"+00:00"
-			start_datetime_user = start_datetime+"+00:00"
+			end_datetime = end_datetime+"+00:00"
+			start_datetime = start_datetime+"+00:00"
 
-			unaware_tz_start_dt = convert_iso_to_datetime(start_datetime_user)
-			unaware_tz_end_dt = convert_iso_to_datetime(end_datetime_user)
-
-			# set user timezone, convert to UTC and to isoformat
-			start_datetime = user_tz.localize(unaware_tz_start_dt.replace(tzinfo=None)).astimezone(pytz.utc).isoformat()
-			end_datetime = user_tz.localize(unaware_tz_end_dt.replace(tzinfo=None)).astimezone(pytz.utc).isoformat()
-			
 		# start-evaluation sockshop carts preprod 08:00 08:15
 		elif(len(args_list) == 5):
 			logging.info('evaluation for hours and minutes')
@@ -169,7 +169,7 @@ def start_evaluation(message, args):
 			start_datetime = user_tz.localize(unaware_tz_start_dt.replace(tzinfo=None)).astimezone(pytz.utc).isoformat()
 			end_datetime = user_tz.localize(unaware_tz_end_dt.replace(tzinfo=None)).astimezone(pytz.utc).isoformat()
 			
-		# start-evaluation sockshop carts preprod 01/01/2020 08:00 08:15
+		# start-evaluation sockshop carts preprod 20/05/2020 08:00 08:15
 		elif(len(args_list) == 6):
 			project = args_list[0]
 			service = args_list[1]
