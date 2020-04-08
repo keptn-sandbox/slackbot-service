@@ -2,3 +2,4 @@ slackbot==0.5.4
 requests
 python-dotenv
 python-dateutil
+pytz

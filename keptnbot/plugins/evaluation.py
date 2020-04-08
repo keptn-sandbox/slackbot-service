@@ -5,7 +5,7 @@ import re
 import json
 import requests
 import datetime
-import os, sys
+import os
 import time
 import logging
 import slackbot_settings
@@ -241,11 +241,7 @@ def start_evaluation(message, args):
     	])
 		
 	except Exception as e:
-		exc_type, exc_obj, exc_tb = sys.exc_info()
-		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-		print(exc_type, fname, exc_tb.tb_lineno)
 		logging.error(e)
-
 
 	# loops over until it gets response
 	try:
