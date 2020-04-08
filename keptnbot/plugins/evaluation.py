@@ -129,18 +129,24 @@ def start_evaluation(message, args):
 		# removing empty strings from args list
 		args_list = list(filter(None, args_list))
 		project, service, stage, start_datetime, end_datetime = '','','','',''
-		# print(args_list)
 
 		if(len(args_list) == 4):
 			project = args_list[0]
 			service = args_list[1]
 			stage = args_list[2]
-			end_datetime_dt = datetime.datetime.fromtimestamp(utc_ts)
+			end_datetime_dt = datetime.datetime.fromtimestamp(float(user_ts))
 			end_datetime = end_datetime_dt.isoformat()
 			start_datetime = (end_datetime_dt - datetime.timedelta(minutes=int(args_list[3]))).isoformat()
-			end_datetime = end_datetime+"+00:00"
-			start_datetime = start_datetime+"+00:00"
-		
+			end_datetime_user = end_datetime+"+00:00"
+			start_datetime_user = start_datetime+"+00:00"
+
+			unaware_tz_start_dt = convert_iso_to_datetime(start_datetime_user)
+			unaware_tz_end_dt = convert_iso_to_datetime(end_datetime_user)
+
+			# set user timezone, convert to UTC and to isoformat
+			start_datetime = user_tz.localize(unaware_tz_start_dt.replace(tzinfo=None)).astimezone(pytz.utc).isoformat()
+			end_datetime = user_tz.localize(unaware_tz_end_dt.replace(tzinfo=None)).astimezone(pytz.utc).isoformat()
+			
 		# start-evaluation sockshop carts preprod 08:00 08:15
 		elif(len(args_list) == 5):
 			logging.info('evaluation for hours and minutes')
