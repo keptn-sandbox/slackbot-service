@@ -94,6 +94,15 @@ Please always double check the version of Keptn you are using compared to the ve
 |       0.6.x      | keptncontrib/slackbot-service:0.1.0  |
 
 
+## Usage
+
+- Ask the bot what you can do:
+
+    ![help](./images/demo-help.png)
+
+- Ask the bot to start the evaluation and the bot will return the result once it is ready.
+    ![usage](./images/demo-usage.png)
+
 ## Local development
 
 ### Python Virtual Environment
