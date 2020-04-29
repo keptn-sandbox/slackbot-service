@@ -122,7 +122,7 @@ Please always double check the version of Keptn you are using compared to the ve
 1. Active the virtual environment: 
 
     ```console
-    source venv/bin/active
+    source venv/bin/activate
     ```
 
 1. Install the requirements into the virtual environment:
