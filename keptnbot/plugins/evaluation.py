@@ -11,23 +11,17 @@ import logging
 import slackbot_settings
 import dateutil.parser
 import pytz
+from keptnbot.plugins import utils
 
 keptn_host = os.getenv('keptn_host')
 keptn_token = os.getenv('keptn_api_token')
 headers = {'x-token': keptn_token, 'Content-Type': 'application/json'}
 
-def helper_datetime(mins):
-	past = datetime.datetime.now() - datetime.timedelta(minutes=int(mins))
-	return past.isoformat()
 
-def convert_iso_to_datetime(s):
-	d = dateutil.parser.parse(s)
-	return d
 
 def send_event(start, end, project, service, stage):
 	
 	logging.info(keptn_host)
-	#logging.info(keptn_token)
 
 	body = {
   		"data": {
@@ -38,7 +32,7 @@ def send_event(start, end, project, service, stage):
     	"stage": stage,
     	"teststrategy": "manual"
   		},
-  		"type": "sh.keptn.event.start-evaluation",
+			"type": "sh.keptn.event.start-evaluation",
 			"source": "https://github.com/keptn-sandbox/slackbot-service"
 	}
 	res = requests.post(url=keptn_host+"/v1/event", headers=headers, data=json.dumps(body), verify=slackbot_settings.TRUST_SELFSIGNED_SSL)
@@ -162,8 +156,8 @@ def start_evaluation(message, args):
 			start_datetime_user = user_dt.isoformat().split('T')[0]+'T'+args_list[3]
 			end_datetime_user = user_dt.isoformat().split('T')[0]+'T'+args_list[4]
 
-			unaware_tz_start_dt = convert_iso_to_datetime(start_datetime_user)
-			unaware_tz_end_dt = convert_iso_to_datetime(end_datetime_user)
+			unaware_tz_start_dt = utils.convert_iso_to_datetime(start_datetime_user)
+			unaware_tz_end_dt = utils.convert_iso_to_datetime(end_datetime_user)
 
 			# set user timezone, convert to UTC and to isoformat
 			start_datetime = user_tz.localize(unaware_tz_start_dt.replace(tzinfo=None)).astimezone(pytz.utc).isoformat()
@@ -181,8 +175,8 @@ def start_evaluation(message, args):
 			start_datetime_user = date_datetime.isoformat().split('T')[0]+'T'+args_list[4]+":00.000"
 			end_datetime_user = date_datetime.isoformat().split('T')[0]+'T'+args_list[5]+":00.000"
 			
-			unaware_tz_start_dt = convert_iso_to_datetime(start_datetime_user)
-			unaware_tz_end_dt = convert_iso_to_datetime(end_datetime_user)
+			unaware_tz_start_dt = utils.convert_iso_to_datetime(start_datetime_user)
+			unaware_tz_end_dt = utils.convert_iso_to_datetime(end_datetime_user)
 
 			# set user timezone, convert to UTC and to isoformat
 			start_datetime = user_tz.localize(unaware_tz_start_dt.replace(tzinfo=None)).astimezone(pytz.utc).isoformat()
