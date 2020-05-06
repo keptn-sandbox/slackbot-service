@@ -43,75 +43,6 @@ def send_event(start, end, project, service, stage):
 
 	return keptn_context
 
-def get_evaluation(keptn_context, message):
-	url = '{0}/v1/event?keptnContext={1}&type=sh.keptn.events.evaluation-done'.format(keptn_host, keptn_context)
-	
-	res_json = None
-	
-	# 1 minute timeout until status code is 200
-	res_timeout = time.time() + slackbot_settings.EVALUATION_TIMEOUT*1 
-	while res_timeout > time.time():
-		res = requests.get(url=url, headers=headers, verify=slackbot_settings.TRUST_SELFSIGNED_SSL)
-		if(res.status_code == 200):
-			res_json = res.json()
-			break
-		time.sleep(1)
-	
-	# indicator results
-	indicators = json.dumps(res_json['data']['evaluationdetails'])
-	bridge_url = 'Bridge URL not available'
-	if(os.getenv('bridge_url')):
-		bridge_url = os.getenv('bridge_url')+'/project/'+res_json['data']['project']
-	message.send_webapi("Evaluation-Done", attachments = [
-        {
-	    "blocks": [
-	    	{
-	    		"type": "divider"
-	    	},
-	    	{
-	    		"type": "section",
-	    		"fields": [
-	    			{
-	    				"type": "mrkdwn",
-	    				"text": "*Project:*\n " + res_json['data']['project']
-	    			},
-	    			{
-	    				"type": "mrkdwn",
-	    				"text": "*Service:*\n " + res_json['data']['service']
-	    			},
-					{
-	    				"type": "mrkdwn",
-	    				"text": "*Stage:*\n " + res_json['data']['service']
-	    			},
-					{
-	    				"type": "mrkdwn",
-	    				"text": "*Strategy:*\n " + res_json['data']['teststrategy']
-	    			},
-	    			{
-	    				"type": "mrkdwn",
-	    				"text": "*Time:*\n " + res_json['time']
-	    			},
-	    			{
-	    				"type": "mrkdwn",
-	    				"text": "*Result:*\n " + res_json['data']['result']
-	    			},
-	    			{
-	    				"type": "mrkdwn",
-	    				"text": "*Keptn Context:*\n " + res_json['shkeptncontext']
-	    			},
-					{
-	    				"type": "mrkdwn",
-	    				"text": "*Bridge URL:*\n " + bridge_url
-	    			}
-	    		]
-	    	},
-	    	{
-	    		"type": "divider"
-	    	}
-	            ]
-        }
-    ])
-	message.reply(indicators, in_thread=True)
 
 @respond_to(r'start-evaluation (.*)', re.IGNORECASE)
 def start_evaluation(message, args):
@@ -250,7 +181,7 @@ def start_evaluation(message, args):
 
 	# loops over until it gets response
 	try:
-		get_evaluation(keptn_context, message)
+		utils.get_evaluation(keptn_context, message)
 	except Exception as e:
 		message.send('`Something went wrong!`')
 		logging.error(e)
