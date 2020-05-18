@@ -2,9 +2,9 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/keptn-contrib/slackbot-service?include_prereleases)
 
-The *slackbot-service* is a [Keptn](https://keptn.sh) service that is responsible for interacting with Keptn via a Slack bot. You can interact with the bot by e.g., asking for a deployment evaluation.
+The *slackbot-service* is a [Keptn](https://keptn.sh) service that is responsible for interacting with Keptn via a Slack bot. You can interact with the bot by e.g., asking for a deployment evaluation or trigger an evalution by telling the bot about a finished deployment.
 
-**Please note:** If you are looking for the Slack integration that **sends** events from Keptn into a Slack channel, please refer to the [notification-service](https://github.com/keptn-contrib/notification-service). The slackbot-service is for triggering actions via the Slackbot and is not listening for events from Keptn.
+**Please note:** If you are looking for the Slack integration that **sends** events from Keptn into a Slack channel, please refer to the [notification-service](https://github.com/keptn-contrib/notification-service). The slackbot-service is for triggering actions via the Slackbot and does not serve as a notifications service.
 
 The service itself doesn't have to run in the Keptn cluster, however, it is for sure possible. 
 
@@ -12,7 +12,6 @@ The service itself doesn't have to run in the Keptn cluster, however, it is for 
 ## Installation
 
 ### Create bot user in Slack and receive bot token
-
 
 1. Go to https://YOUR-SLACK-TENANT.slack.com/apps/manage/custom-integrations and search for **Bots** to add a bot user.
     ![botuser](./images/bot-user.png)
@@ -45,17 +44,17 @@ You will need the Slack Bot token you received during the setup of the Bot user.
 **Keptn**
 
 Get the Keptn endpoint by executing the following command in your terminal:
-```sh
+```
 echo https://api.keptn.$(kubectl get cm keptn-domain -n keptn -ojsonpath={.data.app_domain})
 ```
 
 Get the Keptn Bridge endpoint by executing the following command in your terminal:
-```sh
+```
 echo https://bridge.keptn.$(kubectl get cm keptn-domain -n keptn -ojsonpath={.data.app_domain})
 ```
 
 Get the Keptn API token by executing the following command in your terminal:
-```sh
+```
 echo $(kubectl get secret keptn-api-token -n keptn -ojsonpath={.data.keptn-api-token} | base64 --decode)
 ```
 
@@ -80,7 +79,7 @@ env:
 
 Install the Slackbot service in your cluster by applying the manifest.
 
-```console
+```
 kubectl apply -f slackbot-service.yaml
 ```
 
