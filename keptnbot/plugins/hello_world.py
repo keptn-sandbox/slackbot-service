@@ -11,7 +11,7 @@ def greet(message):
         'fallback': 'Fallback text',
         'author_name': 'Hello from Keptn',
         'author_link': 'https://keptn.sh',
-        'text': 'An opinionated open-source framework for event-based, automated continuous operations in cloud-native environments.',
+        'text': 'An opinionated open-source framework for event-based, automated continuous operations in cloud-native environments. Learn more https://keptn.sh',
         'color': '#59afe1'
     }]
     message.send_webapi('', json.dumps(attachments))
