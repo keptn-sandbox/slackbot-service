@@ -19,13 +19,19 @@ spec:
         imagePullPolicy: Always
         env:
         - name: keptn_host
-          value: "http://api.keptn.svc.cluster.local"
+          value: "http://api-gateway-nginx.keptn.svc.cluster.local"
         - name: bridge_url
           value: ""
         - name: keptn_api_token
-          value: ""
+          valueFrom:
+            secretKeyRef:
+              name: keptn-api-token
+              key: keptn-api-token
         - name: slackbot_token
-          value: ""
+          valueFrom:
+            secretKeyRef:
+              name: slackbot-token
+              key: slackbot-token
         ports:
         - containerPort: 8080
         resources:
