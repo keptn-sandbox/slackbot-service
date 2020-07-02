@@ -28,12 +28,14 @@ def get_projects(message):
         logging.info(project)
         logging.info("")
         myprojects = myprojects + "\n • " + project['projectName']
-        # for stage in project['stages']:
-        #   logging.info("stage: ")
-        #   logging.info(stage)
-
+        mystages = ": "
+        for stage in project['stages']:
+          logging.info("stage: ")
+          logging.info(stage)
+          mystages = mystages + " " + stage['stageName']
+        myprojects = myprojects + mystages
       if myprojects != "":
-        myprojects = "Here is the list of projects:\n" + myprojects
+        myprojects = "Here is the list of projects and their stages:\n" + myprojects
         myprojects = myprojects + "\n You can ask for the services of each project with @Keptn get services of <projectname>"
       else:
         myprojects = "No projects found."
