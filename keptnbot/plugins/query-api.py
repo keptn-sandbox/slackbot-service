@@ -64,17 +64,20 @@ def get_services(message, args):
         logging.info("project: " + project['projectName'])
         logging.info(project)
         logging.info("")
-        myservices = myservices + "\n • " + project['projectName']
         if project['projectName'] == projectname:
           stage = project['stages'][0]
-          logging.info("stage: ")
-          logging.info(stage)
-          # BREAKING SINCE KEPTN API RETURN NONE FOR SERVICES
-          for service in stage['services']:
+          stagename = stage['stageName']
+          logging.info("stage: " + stagename)
+          url = '{0}/configuration-service/v1/project/{1}/stage/{2}/service?pageSize=50'.format(utils.keptn_host, projectname, stagename)
+          res = requests.get(url=url, headers=utils.headers, verify=slackbot_settings.TRUST_SELFSIGNED_SSL)
+          res_json = res.json()
+          logging.info(res_json)
+          for service in res_json['services']:
             logging.info(service)
+            myservices = myservices + "\n • " + service['serviceName']
 
       if myservices != "":
-        myservices = "Here is the list of services:\n" + myservices
+        myservices = "Here is the list of services in project "+projectname+":\n" + myservices
       else:
         myservices = "No services found."
 
