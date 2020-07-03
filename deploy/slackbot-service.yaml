@@ -30,7 +30,7 @@ spec:
         - name: slackbot_token
           valueFrom:
             secretKeyRef:
-              name: slackbot-token
+              name: slackbot
               key: slackbot-token
         ports:
         - containerPort: 8080
