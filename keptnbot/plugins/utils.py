@@ -42,7 +42,16 @@ def get_evaluation(keptn_context, message):
 	indicators = json.dumps(res_json['data']['evaluationdetails'])
 	bridge_url = 'Bridge URL not available'
 	if(os.getenv('bridge_url')):
-		bridge_url = os.getenv('bridge_url')+'/project/'+res_json['data']['project']
+		bridge_url = os.getenv('bridge_url')+'trace/'+ str(keptn_context)
+
+	emoji=""
+	if (res_json['data']['result'] == "pass"):
+		emoji = ":white_check_mark:"
+	elif (res_json['data']['result'] == "warning"):
+		emoji = ":warning:"
+	elif (res_json['data']['result'] == "fail"):
+		emoji = ":no_entry:"
+
 	message.send_webapi("Evaluation-Done", attachments = [
         {
 	    "blocks": [
@@ -62,7 +71,7 @@ def get_evaluation(keptn_context, message):
 	    			},
 					{
 	    				"type": "mrkdwn",
-	    				"text": "*Stage:*\n " + res_json['data']['service']
+	    				"text": "*Stage:*\n " + res_json['data']['stage']
 	    			},
 					{
 	    				"type": "mrkdwn",
@@ -74,7 +83,7 @@ def get_evaluation(keptn_context, message):
 	    			},
 	    			{
 	    				"type": "mrkdwn",
-	    				"text": "*Result:*\n " + res_json['data']['result']
+	    				"text": "*Result:*\n " + res_json['data']['result'] + " " + emoji
 	    			},
 	    			{
 	    				"type": "mrkdwn",

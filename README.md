@@ -43,22 +43,20 @@ You will need the Slack Bot token you received during the setup of the Bot user.
 
 **Keptn**
 
-Get the Keptn endpoint by executing the following command in your terminal:
-```
-echo https://api.keptn.$(kubectl get cm keptn-domain -n keptn -ojsonpath={.data.app_domain})
-```
 
-Get the Keptn Bridge endpoint by executing the following command in your terminal:
+If you have your Bridge externally exposed, you can get the Keptn Bridge endpoint by executing the following command in your terminal:
 ```
 echo https://bridge.keptn.$(kubectl get cm keptn-domain -n keptn -ojsonpath={.data.app_domain})
 ```
 
-Get the Keptn API token by executing the following command in your terminal:
-```
-echo $(kubectl get secret keptn-api-token -n keptn -ojsonpath={.data.keptn-api-token} | base64 --decode)
-```
 
 ### Set environment variables
+
+First, set the Slackbot token as a secret in your Kubernetes cluster for the Slackbot Service to fetch later.
+
+```
+kubectl create secret generic slackbot --from-literal="slackbot-token=XXXXXXX" -n keptn
+```
 
 Clone the repo or download just the `deploy/slackbot-service.yaml` file.
 Edit the `env` section of the file to have the environment variables match your Keptn API token and Slackbot Token.
@@ -66,13 +64,19 @@ If you are going to deploy the Slackbot service into the Keptn cluster, you can 
 ```yaml
 env:
 - name: keptn_host
-  value: "http://api.keptn.svc.cluster.local"
+  value: "http://api-gateway-nginx.keptn.svc.cluster.local"
 - name: bridge_url
   value: ""
 - name: keptn_api_token
-  value: ""
+  valueFrom:
+    secretKeyRef:
+      name: keptn-api-token
+      key: keptn-api-token
 - name: slackbot_token
-  value: ""
+  valueFrom:
+    secretKeyRef:
+      name: slackbot
+      key: slackbot-token
 ```
 
 ### Install it in your cluster
@@ -99,8 +103,14 @@ Please always double check the version of Keptn you are using compared to the ve
 
     ![help](./images/demo-help.png)
 
+- Ask the bot for the already created projects:
+
+    ![help](./images/demo-projects.png)
+
 - Ask the bot to start the evaluation and the bot will return the result once it is ready.
     ![usage](./images/demo-usage.png)
+
+
 
 ## Local development
 
