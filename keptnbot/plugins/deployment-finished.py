@@ -72,7 +72,9 @@ def deployment_finished(message, args):
         keptn_context = send_event(project, service, stage, test_strategy, deployment_uri)
         logging.info(keptn_context)
 
-        bridgelink = str(bridge_url) + "project/" + str(project) + "/" + str(service) + "/" + str(keptn_context)
+        bridgelink=""
+        if (str(bridge_url) != ""):
+          bridgelink = "\nFollow <"+ str(bridge_url) + "trace/" + str(keptn_context)+"|along in the bridge> if you want." 
         message.send('Tests & evaluation triggered! ' + str(bridgelink))
 
         try:

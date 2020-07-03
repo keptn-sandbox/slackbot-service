@@ -16,7 +16,7 @@ from keptnbot.plugins import utils
 keptn_host = os.getenv('keptn_host')
 keptn_token = os.getenv('keptn_api_token')
 headers = {'x-token': keptn_token, 'Content-Type': 'application/json'}
-
+bridge_url = os.getenv('bridge_url')
 
 
 def send_event(start, end, project, service, stage):
@@ -130,51 +130,10 @@ def start_evaluation(message, args):
 		
 		keptn_context = send_event(start_datetime, end_datetime, project, service, stage)
 
-		message.send_webapi("Start-Evaluation", attachments = [
-        {
-	    "blocks": [
-	    	{
-	    		"type": "divider"
-	    	},
-	    	{
-	    		"type": "section",
-	    		"fields": [
-	    			{
-	    				"type": "mrkdwn",
-	    				"text": "*Project:*\n " + project
-	    			},
-	    			{
-	    				"type": "mrkdwn",
-	    				"text": "*Service:*\n " + service
-	    			},
-					{
-	    				"type": "mrkdwn",
-	    				"text": "*Stage:*\n " + stage
-	    			},
-					{
-	    				"type": "mrkdwn",
-	    				"text": "*Strategy:*\n " + strategy
-	    			},
-	    			{
-	    				"type": "mrkdwn",
-	    				"text": "*Start:*\n " + start_datetime
-	    			},
-	    			{
-	    				"type": "mrkdwn",
-	    				"text": "*End:*\n " + end_datetime
-	    			},
-	    			{
-	    				"type": "mrkdwn",
-	    				"text": "*Keptn Context:*\n " + keptn_context
-	    			}
-	    		]
-	    	},
-	    	{
-	    		"type": "divider"
-	    	}
-	            ]
-        }
-    	])
+		bridgelink=""
+		if (str(bridge_url) != ""):
+			bridgelink = "\nFollow <"+ str(bridge_url) + "trace/" + str(keptn_context)+"|along in the bridge> if you want." 
+		message.send('Evaluation triggered! ' + str(bridgelink))
 		
 	except Exception as e:
 		logging.error(e)
