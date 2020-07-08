@@ -7,6 +7,7 @@ The *slackbot-service* is a [Keptn](https://keptn.sh) service that is responsibl
 **Please note:** If you are looking for the Slack integration that **sends** events from Keptn into a Slack channel, please refer to the [notification-service](https://github.com/keptn-contrib/notification-service). The slackbot-service is for triggering actions via the Slackbot and does not serve as a notifications service.
 
 The service itself doesn't have to run in the Keptn cluster, however, it is for sure possible. 
+Checkout also the [installation option for Keptn on K3s](https://github.com/keptn-sandbox/keptn-on-k3s).
 
 
 ## Installation
