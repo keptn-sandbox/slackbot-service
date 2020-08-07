@@ -4,3 +4,4 @@ python-dotenv
 python-dateutil
 pytz
 flask
+slackclient
