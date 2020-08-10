@@ -39,8 +39,11 @@ def load_request(id):
 @keptn_webserver.route("/", methods=["GET","POST"])
 def keptn_approval():
     if(request.method == 'POST'):
-        
         data = request.get_json()
+        bridgelink=""
+        if (str(bridge_url) != ""):
+            bridgelink = "\nFollow <"+ str(bridge_url) + "trace/" + str(data["shkeptncontext"])+"|along in the bridge> if you want."
+
         if(data["type"] == "sh.keptn.event.approval.triggered"):
             # post to slack
             approval_message = slack_client.chat_postMessage(
@@ -77,6 +80,11 @@ def keptn_approval():
                             {
                                 "title": "Time",
                                 "value": data["time"],
+                                "short": True
+                            },
+                            {
+                                "title": "Bridge Link",
+                                "value": bridgelink,
                                 "short": True
                             },
                             {
@@ -150,7 +158,7 @@ def keptn_approve():
     # based on action approve/reject
     # call keptn event API 
     # update message on slack - remove buttons
-    print(action)
+    #print(action)
     body = request_obj[triggered_id]
     # remove dict keys that are not needed
     print(body)
@@ -168,5 +176,7 @@ def keptn_approve():
     res = requests.post(url=keptn_host+"/v1/event", headers=headers, data=json.dumps(body), verify=slackbot_settings.TRUST_SELFSIGNED_SSL)
     res_json = res.json()
     logging.info(res_json)
+    
+    # update slack message and remove buttons
     
     return Response(status=200)
