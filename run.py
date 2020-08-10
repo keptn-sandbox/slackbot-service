@@ -35,4 +35,4 @@ if __name__ == "__main__":
     t = threading.Thread(target=main)
     t.daemon = True
     t.start()
-    app.run()
+    app.run(debug=True)
