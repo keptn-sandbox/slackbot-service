@@ -167,6 +167,7 @@ def keptn_approve():
     del body["id"]
     del body["time"]
     del body["data"]["result"]
+    body["type"] = "sh.keptn.event.approval.finished"
 
     # construct approval object
     approval_result = ("Rejected :x:", "")
