@@ -103,9 +103,9 @@ def keptn_approval():
                                 "short": True
                             }
                         ],
-                        "title": "Title",
+                        "title": "You have a new approval request:",
                         "color": "#FF0000",
-                        "text": "Approval awaiting action",
+                        #"text": "Approval awaiting action",
                     },
                     {
                         "text": "",
@@ -114,14 +114,16 @@ def keptn_approval():
                                 "actions": [
                                     {
                                         "name": "approval_pass",
-                                        "text": "Approve :heavy_check_mark:",
+                                        "text": "Approve",
                                         "type": "button",
+                                        "style": "primary",
                                         "value": "approval_pass"
                                     },
                                     {
                                         "name": "approval_fail",
-                                        "text": "Reject :x:",
+                                        "text": "Reject",
                                         "type": "button",
+                                        "style": "danger",
                                         "value": "approval_fail"
                                     }
                                 ]
@@ -145,12 +147,12 @@ def keptn_approval():
 def keptn_approve():
     data = json.loads(request.form["payload"])
     action = data["actions"][0]["value"]
-    
+    message_ts = data["message_ts"]
+
     # read triggerid from slack message to access request object for it
     # make sure trigger_id field is second last in slack message
     triggered_id = data["original_message"]["attachments"][0]["fields"][-2]['value']
     request_obj = load_request(triggered_id)
-    #print(request_obj)
     
     # return 200 and func continue 
     Response(status=200)
@@ -161,22 +163,85 @@ def keptn_approve():
     #print(action)
     body = request_obj[triggered_id]
     # remove dict keys that are not needed
-    print(body)
+    #print(body)
     del body["id"]
     del body["time"]
     del body["data"]["result"]
 
     # construct approval object
+    approval_result = ("Rejected :x:", "")
     approval = {}
     if(action == "approval_pass"):
         body["data"]["approval"] = {"result":"pass", "status":"succeeded"}
+        approval_result = ("Approved :heavy_check_mark:", "#008000")
 
     body["data"]["approval"] = {"result":"failed", "status":"succeeded"}
-    print(body)
+    #print(body)
     res = requests.post(url=keptn_host+"/v1/event", headers=headers, data=json.dumps(body), verify=slackbot_settings.TRUST_SELFSIGNED_SSL)
     res_json = res.json()
     logging.info(res_json)
     
+    if(res.status_code != 200):
+        return
+
+    bridgelink=""
+    if (str(bridge_url) != ""):
+        bridgelink = "\nFollow <"+ str(bridge_url) + "trace/" + str(body["shkeptncontext"])+"|along in the bridge> if you want."
+
     # update slack message and remove buttons
+    approval_message = slack_client.chat_update(
+            channel=SLACK_CHANNEL,
+            ts=message_ts,
+            #text="Approval awaiting action.",
+                attachments=[
+                    {
+                        "fields": [
+                            {
+                                "title": "Project",
+                                "value": body["data"]["project"],
+                                "short": True
+                            },
+                            {
+                                "title": "Stage",
+                                "value": body["data"]["stage"],
+                                "short": True
+                            },
+                            {
+                                "title": "Service",
+                                "value": body["data"]["service"],
+                                "short": True
+                            },
+                            {
+                                "title": "Image",
+                                "value": body["data"]["image"],
+                                "short": True
+                            },
+                            {
+                                "title": "Bridge Link",
+                                "value": bridgelink,
+                                "short": True
+                            },
+                            {
+                                "title": "Keptn Context",
+                                "value": body["shkeptncontext"],
+                                "short": True
+                            },
+                            {
+                                "title": "Triggered ID",
+                                "value": body["triggeredid"],
+                                "short": True
+                            },
+                            {
+                                "title": "Event Type",
+                                "value": body["type"],
+                                "short": True
+                            }
+                        ],
+                        "title": "Approval Request: {}".format(approval_result[0]),
+                        "color": approval_result[1],
+                        #"text": "Approval awaiting action",
+                    }
+                ]
+            )
     
     return Response(status=200)
