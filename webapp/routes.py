@@ -32,7 +32,7 @@ def save_request(data):
     req_file.close()
 
 def load_request(id):
-    req_file = open(data["triggeredid"], 'rb')      
+    req_file = open(id, 'rb')      
     req_obj = pickle.load(req_file)
     #print(req_obj)
     req_file.close()
