@@ -11,7 +11,6 @@ import slackbot_settings
 
 keptn_webserver = Blueprint("keptn_webserver", __name__)
 
-SLACK_WEBHOOK = os.getenv("slack_webhook")
 SLACK_CHANNEL = os.getenv("slack_channel")
 SLACK_BOT_TOKEN = os.getenv("slackbot_token")
 
