@@ -42,11 +42,15 @@ def load_request(id):
 def keptn_approval():
     if(request.method == 'POST'):
         data = request.get_json()
+        triggered_id = data["id"]
         bridgelink=""
         if (str(bridge_url) != ""):
             bridgelink = "\nFollow <"+ str(bridge_url) + "trace/" + str(data["shkeptncontext"])+"|along in the bridge> if you want."
 
         if(data["type"] == "sh.keptn.event.approval.triggered"):
+            
+            # make an api call to validate if approval still exist
+
             # post to slack
             approval_message = slack_client.chat_postMessage(
             channel=SLACK_CHANNEL,
@@ -96,7 +100,7 @@ def keptn_approval():
                             },
                             {
                                 "title": "Triggered ID",
-                                "value": data["triggeredid"],
+                                "value": triggered_id,
                                 "short": True
                             },
                             {
