@@ -14,6 +14,7 @@ keptn_webserver = Blueprint("keptn_webserver", __name__)
 SLACK_WEBHOOK = os.getenv("slack_webhook")
 SLACK_CHANNEL = os.getenv("slack_channel")
 SLACK_BOT_TOKEN = os.getenv("slackbot_token")
+
 slack_client = WebClient(SLACK_BOT_TOKEN)
 
 keptn_host = os.getenv('keptn_host')
@@ -25,12 +26,13 @@ def save_request(data):
     req_obj = {}
     req_obj[data["triggeredid"]] = data
     #print(req_obj)
-    req_file = open(keptn_webserver.root_path+"/data/"+ data["triggeredid"], "wb")
+    #req_file = open(keptn_webserver.root_path+"/data/"+ data["triggeredid"], "wb")
+    req_file = open(data["triggeredid"], "wb")
     pickle.dump(req_obj, req_file)
     req_file.close()
 
 def load_request(id):
-    req_file = open(keptn_webserver.root_path+"/data/"+id, 'rb')      
+    req_file = open(data["triggeredid"], 'rb')      
     req_obj = pickle.load(req_file)
     #print(req_obj)
     req_file.close()
