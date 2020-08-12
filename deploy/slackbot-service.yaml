@@ -32,11 +32,6 @@ spec:
             secretKeyRef:
               name: slackbot
               key: slackbot-token
-        - name: slack_webhook
-          valueFrom:
-            secretKeyRef:
-              name: slackbot
-              key: slack-webhook
         - name: slack_channel
           valueFrom:
             secretKeyRef:
