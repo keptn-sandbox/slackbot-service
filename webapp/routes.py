@@ -11,7 +11,6 @@ import slackbot_settings
 
 keptn_webserver = Blueprint("keptn_webserver", __name__)
 
-SLACK_WEBHOOK = os.getenv("slack_webhook")
 SLACK_CHANNEL = os.getenv("slack_channel")
 SLACK_BOT_TOKEN = os.getenv("slackbot_token")
 
@@ -177,20 +176,23 @@ def keptn_approve():
     body["type"] = "sh.keptn.event.approval.finished"
 
     # construct approval object
-    approval_result = ("Rejected :x:", "")
     approval = {}
     logging.info("Approval Request: {}".format(str(action)))
+    body["data"]["approval"] = {"result":"failed", "status":"succeeded"}
+    approval_result = ("Rejected :x:", "")
+
     if(action == "approval_pass"):
         body["data"]["approval"] = {"result":"pass", "status":"succeeded"}
         approval_result = ("Approved :heavy_check_mark:", "#008000")
 
-    body["data"]["approval"] = {"result":"failed", "status":"succeeded"}
     #print(body)
-    res = requests.post(url=keptn_host+"/v1/event", headers=headers, data=json.dumps(body), verify=slackbot_settings.TRUST_SELFSIGNED_SSL)
+    logging.info("keptnURL: " + keptn_host+"/api/v1/event")
+    res = requests.post(url=keptn_host+"/api/v1/event", headers=headers, data=json.dumps(body), verify=slackbot_settings.TRUST_SELFSIGNED_SSL)
     #res_json = res.json()
     logging.info(res.content)
     
     if(res.status_code != 200):
+        logging.error("Could not get HTTP 200 response from Keptn: " + str(res.status_code))
         return
 
     bridgelink=""
