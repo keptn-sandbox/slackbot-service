@@ -179,6 +179,7 @@ def keptn_approve():
     # construct approval object
     approval_result = ("Rejected :x:", "")
     approval = {}
+    logging.info("Approval Request: {}".format(str(action)))
     if(action == "approval_pass"):
         body["data"]["approval"] = {"result":"pass", "status":"succeeded"}
         approval_result = ("Approved :heavy_check_mark:", "#008000")
@@ -186,8 +187,8 @@ def keptn_approve():
     body["data"]["approval"] = {"result":"failed", "status":"succeeded"}
     #print(body)
     res = requests.post(url=keptn_host+"/v1/event", headers=headers, data=json.dumps(body), verify=slackbot_settings.TRUST_SELFSIGNED_SSL)
-    res_json = res.json()
-    logging.info(res_json)
+    #res_json = res.json()
+    logging.info(res.content)
     
     if(res.status_code != 200):
         return
