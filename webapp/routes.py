@@ -8,6 +8,7 @@ from flask import Response
 import pickle
 import logging
 import slackbot_settings
+import time
 
 keptn_webserver = Blueprint("keptn_webserver", __name__)
 
@@ -42,6 +43,9 @@ def keptn_approval():
     if(request.method == 'POST'):
         data = request.get_json()
         triggered_id = data["id"]
+        project = data["data"]["project"]
+        stage = data["data"]["stage"]
+        service = data["data"]["service"]
         data["triggeredid"] = triggered_id
         bridgelink=""
         if (str(bridge_url) != ""):
@@ -50,7 +54,18 @@ def keptn_approval():
         if(data["type"] == "sh.keptn.event.approval.triggered"):
 
             # make an api call to validate if approval still exist
-
+            
+            # 3 seconds wait before checking if approval request exist
+            time.sleep(3)
+            approval_url = "{0}/api/configuration-service/v1/project/{1}/stage/{2}/service/{3}/approval/{4}?pageSize=20"\
+                .format(keptn_host, project, stage, service, triggered_id)
+            
+            req_approval_exist = requests.get(url=approval_url, headers={"x-token":keptn_token})
+            if(req_approval_exist.status_code != 200):
+                logging.info("Status code: {0} from url: {1}".format(str(req_approval_exist.status_code), approval_url))
+                logging.info("Function abort - approval request will only posted to slack if approval exist - return status 200")
+                return
+            
             # post to slack
             approval_message = slack_client.chat_postMessage(
             channel=SLACK_CHANNEL,
@@ -60,17 +75,17 @@ def keptn_approval():
                         "fields": [
                             {
                                 "title": "Project",
-                                "value": data["data"]["project"],
+                                "value": project,
                                 "short": True
                             },
                             {
                                 "title": "Stage",
-                                "value": data["data"]["stage"],
+                                "value": stage,
                                 "short": True
                             },
                             {
                                 "title": "Service",
-                                "value": data["data"]["service"],
+                                "value": service,
                                 "short": True
                             },
                             {
