@@ -64,7 +64,7 @@ def keptn_approval():
             if(req_approval_exist.status_code != 200):
                 logging.info("Status code: {0} from url: {1}".format(str(req_approval_exist.status_code), approval_url))
                 logging.info("Function abort - approval request will only posted to slack if approval exist - return status 200")
-                return
+                return Response(status=200)
             
             # post to slack
             approval_message = slack_client.chat_postMessage(

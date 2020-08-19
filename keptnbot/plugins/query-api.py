@@ -14,7 +14,7 @@ from keptnbot.plugins import utils
 @respond_to(r'get projects', re.IGNORECASE)
 def get_projects(message):
     try:
-      url = '{0}/configuration-service/v1/project?pageSize=50'.format(utils.keptn_host)
+      url = '{0}/api/configuration-service/v1/project?pageSize=50'.format(utils.keptn_host)
       # https://api.keptn.xxx.xip.io/configuration-service/v1/project?pageSize=20&disableUpstreamSync=false
       res = requests.get(url=url, headers=utils.headers, verify=slackbot_settings.TRUST_SELFSIGNED_SSL)
       logging.info("status code " + str(res.status_code) + " for getting projects")
@@ -53,7 +53,7 @@ def get_services(message, args):
     try:
       projectname = args.strip()
 
-      url = '{0}/configuration-service/v1/project/?pageSize=50'.format(utils.keptn_host)
+      url = '{0}/api/configuration-service/v1/project/?pageSize=50'.format(utils.keptn_host)
       # https://api.keptn.xxx.xip.io/configuration-service/v1/project?pageSize=20&disableUpstreamSync=false
       res = requests.get(url=url, headers=utils.headers, verify=slackbot_settings.TRUST_SELFSIGNED_SSL)
       logging.info("status code " + str(res.status_code) + " for getting projects")
@@ -70,11 +70,11 @@ def get_services(message, args):
           stage = project['stages'][0]
           stagename = stage['stageName']
           logging.info("stage: " + stagename)
-          url = '{0}/configuration-service/v1/project/{1}/stage/{2}/service?pageSize=50'.format(utils.keptn_host, projectname, stagename)
-          res = requests.get(url=url, headers=utils.headers, verify=slackbot_settings.TRUST_SELFSIGNED_SSL)
-          res_json = res.json()
-          logging.info(res_json)
-          for service in res_json['services']:
+          #url = '{0}/api/configuration-service/v1/project/{1}/stage/{2}/service?pageSize=50'.format(utils.keptn_host, projectname, stagename)
+          #res = requests.get(url=url, headers=utils.headers, verify=slackbot_settings.TRUST_SELFSIGNED_SSL)
+          #res_json = res.json()
+          #logging.info(res_json)
+          for service in project['stages'][0]['services']:
             logging.info(service)
             myservices = myservices + "\n • " + service['serviceName']
 
