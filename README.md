@@ -14,7 +14,7 @@ Checkout also the [installation option for Keptn on K3s](https://github.com/kept
 
 ### Create & install Slack app
 
-1. Create a [classic Slack app](https://api.slack.com/apps?new_classic_app=1) and give it a name, e.g., **Keptn-App** and select the development slack workspace.
+1. Create a **[classic Slack app](https://api.slack.com/apps?new_classic_app=1)** and give it a name, e.g., **Keptn-App** and select the development slack workspace.
 
 1. In the next screen, add bot to the app. 
 
@@ -48,7 +48,7 @@ Checkout also the [installation option for Keptn on K3s](https://github.com/kept
 
 1. In the left menu of Slack right-click on the channel that you just created and click on **Copy link**. Open this link in a browser or paste it into a textfile as we will need the channel ID for the integration to work. 
 
-1. The link will look similar to *https://your-workspace.slack.com/archives/C018WDNTZKN* - please copy the last part of the URL after the last `/` as this is the channel ID that we'll need in a minute.
+1. The link will look similar to *https://your-workspace.slack.com/archives/C018WDNTZKN* - please copy the last part of the URL after the last `/` as this is the channel ID that we'll need in a minute. In this example the channel ID is `C018WDNTZKN`.
 
 
 
@@ -107,7 +107,7 @@ This repository comes with a manifest that will be used to install this integrat
 
 1. Go back to your browser if you still have Slack app open or navigate to the [Slack app overview](https://api.slack.com/apps/) and select the Slack app that we created earlier.
 
-1. Click on **Interactivity & Shortcuts** and activate the toggle. Add a **Request URL** add the URL of the public enpoint appended with `hanlder` for your Slackbot service. Example: `http://34.67.190.1/handler`
+1. Click on **Interactivity & Shortcuts** and activate the toggle. Add a **Request URL** add the URL of the public enpoint appended with `handler` for your Slackbot service. Example: `http://34.67.190.1/handler`
 
     ![](./images/add-interactivity.png)
 
