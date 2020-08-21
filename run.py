@@ -6,6 +6,11 @@ import logging.config
 from slackbot.bot import Bot
 import slackbot_settings
 
+from flask import Flask
+import threading
+
+from webapp import routes
+
 def main():
     kw = {
         'format': '[%(asctime)s] %(message)s',
@@ -22,5 +27,12 @@ def main():
     except Exception as e:
         print(e)
 
+app = Flask(__name__)
+
+app.register_blueprint(routes.keptn_webserver)
+
 if __name__ == "__main__":
-    main()
+    t = threading.Thread(target=main)
+    t.daemon = True
+    t.start()
+    app.run(host='0.0.0.0', port=5000, debug=False)

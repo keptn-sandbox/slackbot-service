@@ -4,3 +4,4 @@ venv
 __paycache__
 *.pyc
 .vscode
+webapp/data/*

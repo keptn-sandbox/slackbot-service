@@ -2,91 +2,118 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/keptn-contrib/slackbot-service?include_prereleases)
 
-The *slackbot-service* is a [Keptn](https://keptn.sh) service that is responsible for interacting with Keptn via a Slack bot. You can interact with the bot by e.g., asking for a deployment evaluation or trigger an evalution by telling the bot about a finished deployment.
+The *slackbot-service* is a [Keptn](https://keptn.sh) service that is responsible for interacting with Keptn via a Slack app. You can interact with the app and bot by e.g., asking for a deployment evaluation, trigger an evalution by telling the bot about a finished deployment or get notified about an approval request.
 
 **Please note:** If you are looking for the Slack integration that **sends** events from Keptn into a Slack channel, please refer to the [notification-service](https://github.com/keptn-contrib/notification-service). The slackbot-service is for triggering actions via the Slackbot and does not serve as a notifications service.
 
-The service itself doesn't have to run in the Keptn cluster, however, it is for sure possible. 
+We are going to install the service in the same cluster that Keptn is running in.
 Checkout also the [installation option for Keptn on K3s](https://github.com/keptn-sandbox/keptn-on-k3s).
 
 
 ## Installation
 
-### Create bot user in Slack and receive bot token
+### Create & install Slack app
 
-1. Go to https://YOUR-SLACK-TENANT.slack.com/apps/manage/custom-integrations and search for **Bots** to add a bot user.
-    ![botuser](./images/bot-user.png)
+1. Create a **[classic Slack app](https://api.slack.com/apps?new_classic_app=1)** and give it a name, e.g., **Keptn-App** and select the development slack workspace.
 
-1. Click on **Add to Slack** and give your bot a username. This will be the name you will interact with the bot. A good name would be, e.g., **keptn**
+1. In the next screen, add bot to the app. 
 
-1. Click on **Add bot integration**
+    ![add bot](./images/add-bot.png)
 
-1. In the next screen you will see the API Token for your Bot user. You will need this token to connect your Slackbot-Service with the just created bot.
-    You can also change the name here, or customize the bot by changing the icon.
-    ![bot-token](./images/bot-token.png)
+1. Add a legacy bot user to the bot. 
 
-<!--
-alternative way
+    ![](./images/add-legacy-bot-user.png)
 
-1. Create Slack app
+1. Give the Bot a name, e.g, **Keptn**. 
 
-    https://api.slack.com/apps?new_app=1
+    ![](./images/add-bot-user.png)
 
-1.
--->
+1. Click on **Install App** in the left menu and **Install App to Workspace**. 
+
+    ![](./images/install-app.png)
+
+1. Confirm the next dialog.
+
+1. Copy the **Bot User OAuth Access Token** as we will need it later. 
+
+    ![](./images/copy-bot-token.png)
+
+1. We are finished with this integration by now. However, we need to change some settings later, so pleae keep this browser open.
+
+1. Go to your Slack workspace and create a new channel that will receive the approval notifications. You can name it, e.g., **Keptn-approvals**. 
+
+    ![](./images/add-slack-channel.png)
+
+1. Add the app to the channel by clicking on **Add an app** and select the newly created app from the list.
+
+1. In the left menu of Slack right-click on the channel that you just created and click on **Copy link**. Open this link in a browser or paste it into a textfile as we will need the channel ID for the integration to work. 
+
+1. The link will look similar to *https://your-workspace.slack.com/archives/C018WDNTZKN* - please copy the last part of the URL after the last `/` as this is the channel ID that we'll need in a minute. In this example the channel ID is `C018WDNTZKN`.
 
 
-### Get credentials
 
-**Slack**
+### Deploy Slackbot service
 
-You will need the Slack Bot token you received during the setup of the Bot user.
+This repository comes with a manifest that will be used to install this integration to Keptn.
 
-**Keptn**
+1. Set two environment variables as we need them later. Use the values that you have copied earlier.
+
+    ```
+    export SLACKBOT_TOKEN=xxxxxx
+    export SLACK_CHANNEL=xxxxxxx
+    ```
+
+1. Create a secret with this environment variables, you can go ahead and copy/paste this next line. Make sure you are connected to the correct Kubernetes cluster.
+
+    ```
+    kubectl create secret generic slackbot --from-literal="slackbot-token=$SLACKBOT_TOKEN" --from-literal="slack-channel=$SLACK_CHANNEL" -n keptn
+    ```    
+
+1. Apply the deployment file from this repo by first cloning the repo and then applying the file.
+
+    ```
+    git clone https://github.com/keptn-sandbox/slackbot-service
+    ```
 
 
-If you have your Bridge externally exposed, you can get the Keptn Bridge endpoint by executing the following command in your terminal:
-```
-echo https://bridge.keptn.$(kubectl get cm keptn-domain -n keptn -ojsonpath={.data.app_domain})
-```
+    Please note that if you want to have the integration with the Keptn's bridge enabled (which is strongly recommended) - first edit this file and put the Keptn's Bridge URL in the corresponding line in the `env` section of the manifest.
+    ```yaml
+    ...
+    env:
+    - name: keptn_host
+    value: "http://api-gateway-nginx.keptn.svc.cluster.local"
+    - name: bridge_url
+    value: "" # add your URL here
+    - name: keptn_api_token
+    valueFrom:
+        secretKeyRef:
+        name: keptn-api-token
+        key: keptn-api-token
+    ...
+    ```
 
+    Apply the manifest.
+    ```
+    kubectl apply -f slackbot-service/deploy/slackbot-service.yaml
+    ```
 
-### Set environment variables
+1. Fetch the **EXTERNAL-IP** of the `slackbot-service` that we are going to need for the two-way integration with Slack.
+    ```
+    kubectl get svc slackbot-external -n keptn
 
-First, set the Slackbot token as a secret in your Kubernetes cluster for the Slackbot Service to fetch later.
+    NAME                TYPE           CLUSTER-IP    EXTERNAL-IP    PORT(S)        AGE
+    slackbot-external   LoadBalancer   10.0.11.178   34.67.190.13   80:31016/TCP   1h
+    ```
 
-```
-kubectl create secret generic slackbot --from-literal="slackbot-token=XXXXXXX" -n keptn
-```
+1. Go back to your browser if you still have Slack app open or navigate to the [Slack app overview](https://api.slack.com/apps/) and select the Slack app that we created earlier.
 
-Clone the repo or download just the `deploy/slackbot-service.yaml` file.
-Edit the `env` section of the file to have the environment variables match your Keptn API token and Slackbot Token.
-If you are going to deploy the Slackbot service into the Keptn cluster, you can keep the default for the variable `KEPTN_HOST`. If you are going to deploy it on a different cluster, please update the KEPTN_HOST to point to your cluster.
-```yaml
-env:
-- name: keptn_host
-  value: "http://api-gateway-nginx.keptn.svc.cluster.local"
-- name: bridge_url
-  value: ""
-- name: keptn_api_token
-  valueFrom:
-    secretKeyRef:
-      name: keptn-api-token
-      key: keptn-api-token
-- name: slackbot_token
-  valueFrom:
-    secretKeyRef:
-      name: slackbot
-      key: slackbot-token
-```
+1. Click on **Interactivity & Shortcuts** and activate the toggle. Add a **Request URL** add the URL of the public enpoint appended with `handler` for your Slackbot service. Example: `http://34.67.190.1/handler`
 
-### Install it in your cluster
+    ![](./images/add-interactivity.png)
 
-Install the Slackbot service in your cluster by applying the manifest.
+1. Click on **Save Changes**.
 
-```
-kubectl apply -f slackbot-service.yaml
-```
+1. Now, whenever there is a new approval request you will be notified in your Slack channel and can approve or decline the request directly via Slack, either on your desktop or mobile device!
 
 ### Compatibility Matrix
 
@@ -96,7 +123,7 @@ Please always double check the version of Keptn you are using compared to the ve
 | Keptn Version    | [Slackbot Service Image](https://hub.docker.com/r/keptncontrib/slackbot-service/tags) |
 |:----------------:|:----------------------------------------:|
 |       0.6.x      | keptncontrib/slackbot-service:0.1.0  |
-
+|       0.7.x      | keptncontrib/slackbot-service:0.2.0  |
 
 ## Usage
 
@@ -111,6 +138,11 @@ Please always double check the version of Keptn you are using compared to the ve
 - Ask the bot to start the evaluation and the bot will return the result once it is ready.
     ![usage](./images/demo-usage.png)
 
+- The bot will post into the Slack channel once there is a new approval request:
+    ![approval request](./images/app-approval.png)
+
+    Once the request is approved, the message will update:
+    ![approval done](./images/app-approved.png)
 
 
 ## Local development
@@ -145,8 +177,10 @@ Please always double check the version of Keptn you are using compared to the ve
 
     ```
     slackbot_token='xxx'
-    keptn_host='https://api.keptn.YOUR-IP.com'
+    slack_channel=''
+    keptn_host='https://keptn.YOUR-IP.com'
     keptn_api_token='xxx'
+    bridge_url='http://keptn.YOUR-IP.com/bridge'
     ```
 
 1. Run the Slackbot:

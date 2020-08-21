@@ -24,7 +24,7 @@ def convert_iso_to_datetime(s):
 	return d
 
 def get_evaluation(keptn_context, message):
-	url = '{0}/v1/event?keptnContext={1}&type=sh.keptn.events.evaluation-done'.format(keptn_host, keptn_context)
+	url = '{0}/api/v1/event?keptnContext={1}&type=sh.keptn.events.evaluation-done'.format(keptn_host, keptn_context)
 	
 	res_json = None
 	
