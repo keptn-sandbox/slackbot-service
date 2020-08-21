@@ -13,6 +13,7 @@ from keptnbot.plugins import utils
 # get projects
 @respond_to(r'get projects', re.IGNORECASE)
 def get_projects(message):
+    logging.info("get project message received")
     try:
       url = '{0}/api/configuration-service/v1/project?pageSize=50'.format(utils.keptn_host)
       # https://api.keptn.xxx.xip.io/configuration-service/v1/project?pageSize=20&disableUpstreamSync=false
@@ -50,6 +51,7 @@ def get_projects(message):
 # get projects
 @respond_to(r'get services of (.*)', re.IGNORECASE)
 def get_services(message, args):
+    logging.info("get services message received")
     try:
       projectname = args.strip()
 
