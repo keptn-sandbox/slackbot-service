@@ -22,6 +22,11 @@ keptn_token = os.getenv('keptn_api_token')
 headers = {'x-token': keptn_token, 'Content-Type': 'application/json'}
 bridge_url = os.getenv('bridge_url')
 
+def get_bridge_url(trace):
+    if bridge_url.endswith("/"):
+        return bridge_url + "trace/" + trace
+    return bridge_url + "/trace/" + trace
+
 def save_request(data):
     req_obj = {}
     req_obj[data["triggeredid"]] = data
@@ -49,7 +54,7 @@ def keptn_approval():
         data["triggeredid"] = triggered_id
         bridgelink=""
         if (str(bridge_url) != ""):
-            bridgelink = "\nFollow <"+ str(bridge_url) + "trace/" + str(data["shkeptncontext"])+"|along in the bridge> if you want."
+            bridgelink = "Find details <"+ get_bridge_url(str(data["shkeptncontext"]))+"|in the bridge>."
 
         if(data["type"] == "sh.keptn.event.approval.triggered"):
 
@@ -212,8 +217,8 @@ def keptn_approve():
 
     bridgelink=""
     if (str(bridge_url) != ""):
-        bridgelink = "\nFollow <"+ str(bridge_url) + "trace/" + str(body["shkeptncontext"])+"|along in the bridge> if you want."
-
+        bridgelink = "Find details <"+ get_bridge_url(str(body["shkeptncontext"]))+"|in the bridge>."
+        
     # update slack message and remove buttons
     approval_message = slack_client.chat_update(
             channel=SLACK_CHANNEL,
