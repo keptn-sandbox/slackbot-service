@@ -138,7 +138,11 @@ Please always double check the version of Keptn you are using compared to the ve
 - Ask the bot to start the evaluation and the bot will return the result once it is ready.
     ![usage](./images/demo-usage.png)
 
-- **TODO: add approval workflow**
+- The bot will post into the Slack channel once there is a new approval request:
+    ![approval request](./images/app-approval.png)
+
+    Once the request is approved, the message will update:
+    ![approval done](./images/app-approved.png)
 
 
 ## Local development
@@ -173,8 +177,10 @@ Please always double check the version of Keptn you are using compared to the ve
 
     ```
     slackbot_token='xxx'
-    keptn_host='https://api.keptn.YOUR-IP.com'
+    slack_channel=''
+    keptn_host='https://keptn.YOUR-IP.com'
     keptn_api_token='xxx'
+    bridge_url='http://keptn.YOUR-IP.com/bridge'
     ```
 
 1. Run the Slackbot:
