@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from slackbot.bot import respond_to
+import logging
 import re
 import json
 
 @respond_to('help$', re.IGNORECASE)
 def help_reply(message):
+    logging.info("help message received")
     reply = []
     reply.append(u'•`{0}`'.format('@<Botname> start-evaluation <project> <service> <stage> <minutes> | example: @Botname start-evaluation <project> <service> <stage> 10'))
     reply.append(u'•`{0}`'.format('@<Botname> start-evaluation <project> <service> <stage> <start-time> <end-time> | example: @Botname start-evaluation <project> <service> <stage> 12:00 12:15'))
