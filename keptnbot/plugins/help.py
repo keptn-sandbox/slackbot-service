@@ -9,6 +9,8 @@ import json
 def help_reply(message):
     logging.info("help message received")
     reply = []
+    reply.append(u'•`{0}`'.format('The bot will proactively inform you on approval requests'))
+    reply.append(u'•`{0}`'.format('You can also interact via these commands:'))
     reply.append(u'•`{0}`'.format('@<Botname> start-evaluation <project> <service> <stage> <minutes> | example: @Botname start-evaluation <project> <service> <stage> 10'))
     reply.append(u'•`{0}`'.format('@<Botname> start-evaluation <project> <service> <stage> <start-time> <end-time> | example: @Botname start-evaluation <project> <service> <stage> 12:00 12:15'))
     reply.append(u'•`{0}`'.format('@<Botname> start-evaluation <project> <service> <stage> <date> <start-time> <end-time> | example: @Botname start-evaluation <project> <service> <stage> 30/01/2020 12:00 12:15'))
